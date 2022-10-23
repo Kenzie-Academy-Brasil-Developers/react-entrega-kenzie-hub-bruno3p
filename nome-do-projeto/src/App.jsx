@@ -2,13 +2,16 @@ import { useState } from "react";
 import "./App.css";
 import Routes from "./routes";
 import Global from "./styles/global";
-import './styles/colors.css';
+import "./styles/colors.css";
+import Providers from "./contexts/Providers";
 function App() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   return (
     <>
-      <Global />
-      <Routes  user={user}  setUser={setUser} />
+      <Providers>
+        <Global />
+        <Routes />
+      </Providers>
     </>
   );
 }

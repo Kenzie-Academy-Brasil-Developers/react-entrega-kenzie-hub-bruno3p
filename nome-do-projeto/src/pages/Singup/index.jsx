@@ -4,12 +4,13 @@ import Logo from "../../components/Nav/Logo.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FormSinup } from "../../components/Form";
 import { NavSingup } from "../../components/Nav";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { registerSchema } from "./Singupschema";
-import { coreApi } from "../../services/api";
+
+import { UserContext } from "../../contexts/UseContext";
 const Singup = () => {
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(null);
+  const { registerUser, alert } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -21,31 +22,31 @@ const Singup = () => {
     resolver: yupResolver(registerSchema),
   });
 
-  async function registerUser(data) {
-    try {
-      setLoading(true);
-      const response = await coreApi.post("/users", data);
-      console.log(response);
-      setAlert({
-        type: "sucess",
-        message: response.data.message,
-      });
-      setTimeout(() => {
-        setAlert(null);
-        navigate("/");
-      }, 3000);
-    } catch (error) {
-      setAlert({
-        type: "error",
-        message: error.response.data.error,
-      });
-      setTimeout(() => {
-        setAlert(null);
-      }, 3000);
-    } finally {
-      setLoading(false);
-    }
-  }
+  // async function registerUser(data) {
+  //   try {
+  //     setLoading(true);
+  //     const response = await coreApi.post("/users", data);
+  //     console.log(response);
+  //     setAlert({
+  //       type: "sucess",
+  //       message: response.data.message,
+  //     });
+  //     setTimeout(() => {
+  //       setAlert(null);
+  //       navigate("/");
+  //     }, 3000);
+  //   } catch (error) {
+  //     setAlert({
+  //       type: "error",
+  //       message: error.response.data.error,
+  //     });
+  //     setTimeout(() => {
+  //       setAlert(null);
+  //     }, 3000);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   return (
     <>

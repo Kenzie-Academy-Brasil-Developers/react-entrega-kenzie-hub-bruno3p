@@ -46,7 +46,16 @@ export const FormLogin = styled.form`
   .Link{
     color:var(---colo-white2) ;
     text-decoration: none;
-
+    width: 259px;
+    height: 38px;
+    margin-top: 10px;
+    background: var( ---color-pink);
+    color:var(---colo-white2) ;
+    border-radius: 4.06066px;
+    border: 1.2182px solid var( ---color-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 export const FormSinup = styled.form`
