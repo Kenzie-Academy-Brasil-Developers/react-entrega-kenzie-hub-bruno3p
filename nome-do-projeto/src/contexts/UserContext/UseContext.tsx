@@ -1,16 +1,22 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { coreApi } from "../services/api";
+import { iLoginFormData } from "../../pages/Login";
+import { coreApi } from "../../services/api";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { iRegisterFormData } from "../../pages/Singup";
+import { iUser, iTechslist, iApiError, iUserProviderProps } from "../types/types";
+import { iUseContext } from "./types";
 
 
-export const UserContext = createContext({});
 
-export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [globalLoading, setGlobalLoading] = useState();
-  const [alert, setAlert] = useState(null);
-  const [techList, setTechlist] = useState([]);
-  const [currentRoute, setCurrentRoute] = useState(null);
+export const UserContext = createContext({} as iUseContext);
+export const UserProvider = ({ children }: iUserProviderProps) => {
+  const [user, setUser] = useState<iUser | null>(null);
+  const [isShown, setIsShown] = useState(false);
+  const [globalLoading, setGlobalLoading] = useState(false);
+  const [techList, setTechlist] = useState([] as iTechslist[]);
+  const [currentRoute, setCurrentRoute] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +37,8 @@ export const UserProvider = ({ children }) => {
 
           navigate(currentRoute ? currentRoute : "/dashboard");
         } catch (error) {
-          console.log(error)
+          const requestError = error as AxiosError<iApiError>;
+          toast.error(requestError.response?.data.error);
           localStorage.removeItem("@TOKEN");
           navigate("/");
         } finally {
@@ -41,66 +48,59 @@ export const UserProvider = ({ children }) => {
     })();
   }, []);
 
-  const loginUser = async (data, setLoading) => {
+  const loginUser = async (
+    data: iLoginFormData,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     try {
       setLoading(true);
       const response = await coreApi.post("/sessions", data);
       setUser(response.data.user);
-      setTechlist(response.data.user.techs)
+      setTechlist(response.data.user.techs);
       localStorage.setItem("@TOKEN", response.data.token);
       navigate("/dashboard");
-      
     } catch (error) {
+      const requestError = error as AxiosError<iApiError>;
+      toast.error(requestError.response?.data.error);
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
-   
+
   const logoutUser = () => {
- 
-   setUser(null)
-   setTechlist([])
-   localStorage.removeItem("@TOKEN")
-   navigate("/")
-  }
+    setUser(null);
+    setTechlist([]);
+    localStorage.removeItem("@TOKEN");
+    navigate("/");
+  };
 
-
-
-  async function registerUser(data, setLoading) {
+  const registerUser = async (
+    data: iRegisterFormData,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     try {
       setLoading(true);
       const response = await coreApi.post("/users", data);
       console.log(response);
-      setAlert({
-        type: "sucess",
-        message: response.data.message,
-      });
+
       setTimeout(() => {
-        setAlert(null);
         navigate("/");
       }, 3000);
     } catch (error) {
-      setAlert({
-        type: "error",
-        message: error.response.data.error,
-      });
-      setTimeout(() => {
-        setAlert(null);
-      }, 3000);
+      const requestError = error as AxiosError<iApiError>;
+      toast.error(requestError.response?.data.error);
+      setTimeout(() => {}, 3000);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
-        // loading,
-        // setLoading,
-        alert,
         loginUser,
         registerUser,
         techList,

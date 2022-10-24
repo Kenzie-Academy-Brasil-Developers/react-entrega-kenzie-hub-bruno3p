@@ -1,31 +1,35 @@
 import { NavDashboard } from "../../components/Nav";
 import Logo from "../../components/Nav/Logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Divdash, Divdashs, TecList, DivUl, DivModal } from "./styled";
 import { useContext, useState } from "react";
-import { UserContext } from "../../contexts/UseContext";
-import { TechContext } from "../../contexts/techContext";
+import { UserContext } from "../../contexts/UserContext/UseContext";
+import { TechContext } from "../../contexts/techContext/techContext";
 import ButtonImg from "../../components/Nav/Buttonadd.png";
 import Delete from "../../components/Nav/delete.png";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { iTechslist } from "../../contexts/types/types";
 
 const Dashboard = () => {
   const { techList, logoutUser } = useContext(UserContext);
-  const [isShown, setIsShown] = useState(false);
+  const [isShown, setIsShown] = useState(TechContext);
   const { addTech, removeTech } = useContext(TechContext);
+  const { user } = useContext(UserContext);
 
-  const handleClick = (event) => {
+  
+
+  const handleClick = () => {
     setIsShown((current) => !current);
   };
+
   const {
     register,
     handleSubmit,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
-  } = useForm({});
+  } = useForm<iTechslist>({});
 
-  const { user } = useContext(UserContext);
-
-  const submit = (data) => {
+  const submit: SubmitHandler<iTechslist> = (data) => {
     addTech(data, setIsShown);
   };
 
@@ -66,26 +70,25 @@ const Dashboard = () => {
                 placeholder="Nome da Tecnologia"
                 {...register("title")}
               />
-              {errors.name && <p>{errors.name.message}</p>}
+
               <p className="Tech">Selecionar status</p>
               <select
-                type="status"
+                
                 className="Tech"
-                name=""
                 id="status"
                 {...register("status")}
               >
-                <option type="status" value="Iniciante">
+                <option  value="Iniciante">
                   Iniciante{" "}
                 </option>
-                <option type="status" value="Intermediário">
+                <option  value="Intermediário">
                   Intermediario{" "}
                 </option>
-                <option type="status" value="Avançado">
+                <option value="Avançado">
                   Avançado{" "}
                 </option>
               </select>
-              {errors.name && <p>{errors.name.message}</p>}
+
               <button type="submit" className="Registertech">
                 Cadastrar Tecnologia
               </button>

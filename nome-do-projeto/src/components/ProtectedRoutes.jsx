@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/UseContext";
+import { UserContext } from "../contexts/UserContext/UseContext";
 
 const ProtectedRoutes = () => {
   const { user, currentRoute, setCurrentRoute } = useContext(UserContext);
@@ -14,17 +14,9 @@ const ProtectedRoutes = () => {
       }
       navigate("/");
     }
-  },[])
-  
-  return (
-    <>
-    {user&& <Outlet/>}
-    </>
-  )
+  }, []);
 
+  return <>{user && <Outlet />}</>;
+};
 
-
-
-}
-
-export default ProtectedRoutes
+export default ProtectedRoutes;

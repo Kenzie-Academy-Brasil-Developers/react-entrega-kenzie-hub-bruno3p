@@ -1,13 +1,23 @@
 import { createContext, useContext } from "react";
-import { coreApi } from "../services/api";
-import { UserContext } from "../contexts/UseContext";
+import { coreApi } from "../../services/api";
+import { UserContext } from "../UserContext/UseContext";
 import { toast } from "react-toastify";
-export const TechContext = createContext({});
+import { iApiError, iTechslist, iUserProviderProps } from "../types/types";
+import { AxiosError } from "axios";
+import { iTechContext } from "./types";
 
-export const TechProvider = ({ children }) => {
+
+
+
+
+export const TechContext = createContext({} as iTechContext);
+
+export const TechProvider = ({ children }: iUserProviderProps) => {
   const { techList, setTechlist } = useContext(UserContext);
-  
-  const addTech = async (data, setShowModal) => {
+
+  const addTech = async (data: iTechslist, 
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>
+    ) => {
     if (!techList.find((tech) => tech.id === data.id)) {
       try {
         const token = localStorage.getItem("@TOKEN");
@@ -22,18 +32,20 @@ export const TechProvider = ({ children }) => {
         setTechlist([...techList, response.data]);
         setShowModal(false);
       } catch (error) {
+        const requestError = error as AxiosError<iApiError>;
+        toast.error(requestError.response?.data.error);
         console.log(error);
         // toast.error(error.response.error);
       }
     } else {
-      toast.alert("Este tech já está cadastrado na lista.");
+      toast.warn("Este tech já está cadastrado na lista.");
     }
   };
 
-  const removeTech = async (techId) => {
+  const removeTech = async (techId:iTechslist) => {
     try {
       const deleteList = techList.filter((tech) => tech.id !== techId);
-      
+
       const token = localStorage.getItem("@TOKEN");
       await coreApi.delete(`/users/techs/${techId}`, {
         headers: {
@@ -43,14 +55,15 @@ export const TechProvider = ({ children }) => {
       toast.success("tech removido com sucesso");
       setTechlist(deleteList);
     } catch (error) {
+      const requestError = error as AxiosError<iApiError>;
+      toast.error(requestError.response?.data.error);
       console.log(error);
-      // toast.error(error.response.data.error);
     }
   };
   return (
     <TechContext.Provider
       value={{
-        addTech,
+         addTech,
         removeTech,
       }}
     >

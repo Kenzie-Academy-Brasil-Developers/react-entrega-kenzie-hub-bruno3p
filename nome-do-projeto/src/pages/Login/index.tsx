@@ -1,16 +1,21 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Logo from "../../components/Nav/Logo.png";
-import { Link, Outlet,} from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { FormLogin } from "../../components/Form";
 import { NavLogin } from "../../components/Nav";
-import { loginSchema } from "../Login/Loginschema";
-import { useContext,useState } from "react";
-import { UserContext } from "../../contexts/UseContext";
+import { loginSchema } from "./Loginschema";
+import { useContext, useState } from "react";
+import { UserContext } from "../../contexts/UserContext/UseContext";
+import {Logo} from "./Logos.png"
 // import { coreApi } from "../../services/api";
 
+export interface iLoginFormData {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
-  const {loginUser} = useContext(UserContext)
+  const { loginUser } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   // const navigate = useNavigate();
@@ -19,31 +24,14 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm({
+    // reset,
+  } = useForm<iLoginFormData>({
     resolver: yupResolver(loginSchema),
   });
-  const submit = (data) => {
-    loginUser(data, setLoading, () => {
-      reset();
-    })
+
+  const submit: SubmitHandler<iLoginFormData> = (data) => {
+    loginUser(data, setLoading);
   };
-
-
-
-  // const loginUser = async (data) => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await coreApi.post("/sessions", data);
-  //     setUser(response.data.user);
-  //     localStorage.setItem("@TOKEN", response.data.token);
-  //     navigate("/dashboard");
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <>
@@ -69,12 +57,12 @@ const Login = () => {
           {...register("password")}
         />
         {errors.password && <p>{errors.password.message}</p>}
-        <button type="submmit">Entrar</button>
+        <button type="submit">Entrar</button>
         <p>Ainda não possui uma conta?</p>
         {/* <button className="SingupButton"> */}
-          <Link className="Link" to="/Singup">
-            Cadastra-se
-          </Link>
+        <Link className="Link" to="/Singup">
+          Cadastra-se
+        </Link>
         {/* </button> */}
       </FormLogin>
     </>

@@ -1,16 +1,27 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Logo from "../../components/Nav/Logo.png";
+// import Logo from "../../components/Nav/Logo.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FormSinup } from "../../components/Form";
 import { NavSingup } from "../../components/Nav";
 import { useContext, useState } from "react";
 import { registerSchema } from "./Singupschema";
+import { UserContext } from "../../contexts/UserContext/UseContext";
 
-import { UserContext } from "../../contexts/UseContext";
+export interface iRegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  bio: string;
+  contact: string;
+  course_module: string;
+}
+
+
+
 const Singup = () => {
   const [loading, setLoading] = useState(false);
-  const { registerUser, alert } = useContext(UserContext);
+  const { registerUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -18,48 +29,28 @@ const Singup = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<iRegisterFormData>({
     resolver: yupResolver(registerSchema),
   });
 
-  // async function registerUser(data) {
-  //   try {
-  //     setLoading(true);
-  //     const response = await coreApi.post("/users", data);
-  //     console.log(response);
-  //     setAlert({
-  //       type: "sucess",
-  //       message: response.data.message,
-  //     });
-  //     setTimeout(() => {
-  //       setAlert(null);
-  //       navigate("/");
-  //     }, 3000);
-  //   } catch (error) {
-  //     setAlert({
-  //       type: "error",
-  //       message: error.response.data.error,
-  //     });
-  //     setTimeout(() => {
-  //       setAlert(null);
-  //     }, 3000);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
+  const submit: SubmitHandler<iRegisterFormData> = async (data) => {
+    registerUser(data, setLoading);
+  };
+
+
 
   return (
     <>
       <Outlet />
       <NavSingup>
-        <img src={Logo} alt="" />
+        {/* <img src={Logo} alt="" /> */}
         <button>
           <Link className="Link" to="/">
             Voltar
           </Link>
         </button>
       </NavSingup>
-      <FormSinup onSubmit={handleSubmit(registerUser)}>
+      <FormSinup onSubmit={handleSubmit(submit)}>
         <h1>Crie sua conta</h1>
         <label htmlFor="name">Nome</label>
         <input
@@ -115,21 +106,21 @@ const Singup = () => {
 
         <label htmlFor="course_module">Selecionar módulo</label>
         <select
-          name=""
+          
           id="course_module"
-          type="course_module"
+          
           {...register("course_module")}
         >
-          <option type="course_module" value="Primeiro módulo">
+          <option  value="Primeiro módulo">
             Primeiro módulo{" "}
           </option>
-          <option type="course_module" value="Segundo módulo">
+          <option  value="Segundo módulo">
             Segundo módulo{" "}
           </option>
-          <option type="course_module" value="Terceiro módulo">
+          <option  value="Terceiro módulo">
             Terceiro módulo{" "}
           </option>
-          <option type="course_module" value="Quarto módulo">
+          <option  value="Quarto módulo">
             Quarto módulo{" "}
           </option>
         </select>
@@ -139,7 +130,7 @@ const Singup = () => {
           Cadastrar
         </button>
         {loading ? "Cadastrando..." : ""}
-        {alert && <p>{alert.message}</p>}
+        
       </FormSinup>
     </>
   );
