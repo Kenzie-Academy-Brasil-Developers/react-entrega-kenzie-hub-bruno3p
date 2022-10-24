@@ -6,7 +6,7 @@ import { NavLogin } from "../../components/Nav";
 import { loginSchema } from "./Loginschema";
 import { useContext, useState } from "react";
 import { UserContext } from "../../contexts/UserContext/UseContext";
-import {Logo} from "./Logos.png"
+import Logos  from "./Logos.png"
 // import { coreApi } from "../../services/api";
 
 export interface iLoginFormData {
@@ -37,7 +37,7 @@ const Login = () => {
     <>
       <Outlet />
       <NavLogin>
-        <img src={Logo} alt="" />
+        <img src={Logos} alt="" />
       </NavLogin>
       <FormLogin onSubmit={handleSubmit(submit)}>
         <h1>Login</h1>

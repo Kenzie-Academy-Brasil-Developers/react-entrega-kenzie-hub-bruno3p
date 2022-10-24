@@ -1,13 +1,13 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import Logo from "../../components/Nav/Logo.png";
+
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FormSinup } from "../../components/Form";
 import { NavSingup } from "../../components/Nav";
 import { useContext, useState } from "react";
 import { registerSchema } from "./Singupschema";
 import { UserContext } from "../../contexts/UserContext/UseContext";
-
+import Logos  from "./Logos.png"
 export interface iRegisterFormData {
   name: string;
   email: string;
@@ -43,7 +43,7 @@ const Singup = () => {
     <>
       <Outlet />
       <NavSingup>
-        {/* <img src={Logo} alt="" /> */}
+        <img src={Logos} alt="" />
         <button>
           <Link className="Link" to="/">
             Voltar
@@ -126,7 +126,7 @@ const Singup = () => {
         </select>
         {errors.course_module && <p>{errors.course_module.message}</p>}
 
-        <button type="submmit" disabled={loading}>
+        <button type="submit" disabled={loading}>
           Cadastrar
         </button>
         {loading ? "Cadastrando..." : ""}

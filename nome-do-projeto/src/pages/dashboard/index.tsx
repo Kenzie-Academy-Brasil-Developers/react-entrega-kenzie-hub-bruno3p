@@ -10,10 +10,14 @@ import Delete from "../../components/Nav/delete.png";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { iTechslist } from "../../contexts/types/types";
 
+
+
+
+
 const Dashboard = () => {
   const { techList, logoutUser } = useContext(UserContext);
-  const [isShown, setIsShown] = useState(TechContext);
-  const { addTech, removeTech } = useContext(TechContext);
+  const [isShown, setIsShown] = useState(false);
+  const { addTech, removeTech, } = useContext(TechContext);
   const { user } = useContext(UserContext);
 
   

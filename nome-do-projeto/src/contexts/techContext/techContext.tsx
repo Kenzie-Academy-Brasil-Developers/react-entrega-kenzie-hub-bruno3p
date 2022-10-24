@@ -13,11 +13,11 @@ import { iTechContext } from "./types";
 export const TechContext = createContext({} as iTechContext);
 
 export const TechProvider = ({ children }: iUserProviderProps) => {
-  const { techList, setTechlist } = useContext(UserContext);
+  const { techList, setTechlist, } = useContext(UserContext);
 
-  const addTech = async (data: iTechslist, 
+  const addTech = async  (data: iTechslist, 
     setShowModal: React.Dispatch<React.SetStateAction<boolean>>
-    ) => {
+    ) :Promise <void> => {
     if (!techList.find((tech) => tech.id === data.id)) {
       try {
         const token = localStorage.getItem("@TOKEN");
@@ -34,8 +34,8 @@ export const TechProvider = ({ children }: iUserProviderProps) => {
       } catch (error) {
         const requestError = error as AxiosError<iApiError>;
         toast.error(requestError.response?.data.error);
-        console.log(error);
-        // toast.error(error.response.error);
+        
+        
       }
     } else {
       toast.warn("Este tech já está cadastrado na lista.");
